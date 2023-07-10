@@ -7,7 +7,7 @@ public class GameLauncher extends JFrame {
       this.setVisible(true);
       this.setResizable(false);
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      this.setBackground(Color.black);
+      this.setBackground(new Color (41, 44, 44));
       this.setLocationRelativeTo(null);
       this.setTitle("Chess");
       this.add(new GameBoard());
