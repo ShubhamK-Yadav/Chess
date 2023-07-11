@@ -10,7 +10,7 @@ public abstract class Pieces {
   public Pieces(char colour, int id, boolean killed, Image piece){
     this.colour = colour;
     this.id = id;
-    this.killed = killed;
+    this.killed = false;
     this.piece = piece;
   }
 
@@ -23,6 +23,14 @@ public abstract class Pieces {
 
   public int getId(){
     return id;
+  }
+
+  public boolean isKilled(){
+    return killed;
+  }
+
+  public void setKilled(boolean status){
+    this.killed = status;
   }
 
   public Image getImage(){
