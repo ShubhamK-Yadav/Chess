@@ -1,63 +1,88 @@
 import java.awt.Image;
 
+/**
+ * Represents a chess piece.
+ */
 public abstract class Pieces {
-  private char colour;
-  private boolean killed;
-  private Image piece;
-  private int id;
-  private int[] possiblePos;
-  
-  public Pieces(char colour, int id, boolean killed, Image piece){
-    this.colour = colour;
-    this.id = id;
-    this.killed = false;
-    this.piece = piece;
-  }
+    private char colour;
+    private boolean killed;
+    private Image piece;
+    private int id;
+    private int[] possiblePos;
 
-  // array containing arrays with possible solution.
-  public abstract int[] findPossibleMoves();
+    /**
+     * Constructs a Pieces object with the specified color, ID, killed status, and piece image.
+     *
+     * @param colour the color of the piece ('B' for black, 'W' for white)
+     * @param id     the ID of the piece
+     * @param killed the killed status of the piece
+     * @param piece  the image representing the piece
+     */
+    public Pieces(char colour, int id, boolean killed, Image piece) {
+        this.colour = colour;
+        this.id = id;
+        this.killed = false;
+        this.piece = piece;
+    }
 
-  public char getColour(){
-    return colour;
-  }
+    /**
+     * Finds and returns the possible moves for the piece.
+     *
+     * @return an array of possible moves
+     */
+    public abstract int[] findPossibleMoves();
 
-  public int getId(){
-    return id;
-  }
+    /**
+     * Returns the color of the piece.
+     *
+     * @return the color of the piece ('B' for black, 'W' for white)
+     */
+    public char getColour() {
+        return colour;
+    }
 
-  public boolean isKilled(){
-    return killed;
-  }
+    /**
+     * Returns the ID of the piece.
+     *
+     * @return the ID of the piece
+     */
+    public int getId() {
+        return id;
+    }
 
-  public void setKilled(boolean status){
-    this.killed = status;
-  }
+    /**
+     * Checks if the piece is killed.
+     *
+     * @return true if the piece is killed, false otherwise
+     */
+    public boolean isKilled() {
+        return killed;
+    }
 
-  public Image getImage(){
-    return piece;
-  }
+    /**
+     * Sets the killed status of the piece.
+     *
+     * @param status the killed status of the piece
+     */
+    public void setKilled(boolean status) {
+        this.killed = status;
+    }
 
-  public void setImage(Image img){
-    piece = img;
-  }
+    /**
+     * Returns the image representing the piece.
+     *
+     * @return the image representing the piece
+     */
+    public Image getImage() {
+        return piece;
+    }
 
-  // public int getCurrentPosX(){
-  //   return arrayPosI;
-  // }
-
-  // public int getCurrentPosY(){
-  //   return arrayPosJ;
-  // }
-
-  public char colour(){
-    return colour;
-  }
-
-  public boolean killed(){
-    return killed;
-  }
-
-  public int[] getPossibleMoves(){
-    return possiblePos;
-  }
+    /**
+     * Sets the image representing the piece.
+     *
+     * @param img the image representing the piece
+     */
+    public void setImage(Image img) {
+        piece = img;
+    }
 }

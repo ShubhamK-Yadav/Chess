@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-
+/**
+ * Represents the game board for a chess game.
+ */
 public class GameBoard extends JPanel {
     private static final int WINDOW_WIDTH = 600, WINDOW_HEIGHT = 600;
     private static final int BOARD_WIDTH = 512, BOARD_HEIGHT = 512;
@@ -14,15 +16,38 @@ public class GameBoard extends JPanel {
     // private static int gameBlocks = BOARD_HEIGHT * BOARD_WIDTH / SQUARE_SIZE;
     private static ArrayList <ArrayList<Square>> chessboard= new ArrayList<ArrayList<Square>>();
     
+    /**
+     * Constructs a new GameBoard instance.
+     */
     public GameBoard(){
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setFocusable(true);
         this.requestFocus();
-        instantiateSquares();
-        populateInitialChessBoard();
-        // movePiece(getPiece(Pawn.class, 2, 'W'), 2, 'W', 1, 4);
-    }
 
+        //creates the arraylists of squares in chessboard
+        instantiateSquares();
+
+        //creates chess pieces and add them to the relevant squares in the chessboard
+        populateInitialChessBoard();
+        movePiece(findSquare(Pawn.class, 2, 'W').getPiece(), 2, 'W', 3, 2);
+        
+        // for (ArrayList<Square> squares : chessboard){
+        //     for(Square sq: squares){
+        //         if(sq.getPiece() != null){
+        //             System.out.println(sq.getPiece().getClass());
+        //         } else{
+        //             System.out.println("null");
+        //         }
+        //         System.out.println(sq);
+        //     }
+        // }
+    }
+    
+    /**
+     * Loads an image from the specified URL.
+     * @param url the URL of the image to load
+     * @return the loaded BufferedImage instance
+     */
     public static BufferedImage loadImage(String url){
         BufferedImage img = null;
         try {
@@ -32,6 +57,11 @@ public class GameBoard extends JPanel {
         }
         return img;
     }
+
+    /**
+     * Overrides the paint method to render the chess board and pieces.
+     * @param g the Graphics object to paint on
+     */
 
     public void paint(Graphics g){
         //Load all the piece images.
@@ -51,7 +81,7 @@ public class GameBoard extends JPanel {
                 int y = j * SQUARE_SIZE + 50;
                 g.setColor(burntUmber);
                 
-                // check if the tile is a even tile.
+                // check if the tile is a even tile, it is then chaange colour to lightBrown.
                 if ((i+j) % 2 == 0){  
                     g.setColor(lightBrown);    
                 }
@@ -59,49 +89,72 @@ public class GameBoard extends JPanel {
                 if (chessboard.get(j).get(i).getPiece() != null){
                     g.drawImage(chessboard.get(j).get(i).getPiece().getImage(), x, y,64,64, null);
                 }
-                System.out.println(getPiece(Pawn.class, 0, 'W').getId());
             }
         }
-    }
-
-    public static Pieces getPiece(Class<?> type, int id, char colour){
-        for (int i = 0; i < chessboard.size(); i++) {
-            for (int j = 0; j < chessboard.get(i).size(); j++) {
-                Pieces piece = chessboard.get(i).get(j).getPiece();
-                if (piece != null && piece.getClass().equals(type) && piece.getId() == id && piece.getColour() == colour) {
-                    return piece;
-                }
-            }
-        }
-        return null;
     }
     
-    public static int[] getPosition(Class<?> type, int id, char colour) {
-        for (int i = 0; i < chessboard.size(); i++) {
-            for (int j = 0; j < chessboard.get(i).size(); j++) {
-                Pieces piece = chessboard.get(j).get(i).getPiece();
-                if (piece != null && piece.getClass().equals(type) && piece.getId() == id && piece.getColour() == colour) {
-                    return new int[] { j, i };
+    /**
+     * Finds and returns the Square object at the specified coordinates (x, y).
+     * @param x the x-coordinate of the Square
+     * @param y the y-coordinate of the Square
+     * @return the Square object at the specified coordinates, or null if not found
+     */
+    public static Square findSquare(int x, int y){
+        for (ArrayList<Square> squares : chessboard){
+            for(Square sq: squares){
+                if(sq.getCoords()[0] == x && sq.getCoords()[1] == y){
+                    return sq;
                 }
             }
         }
         return null;
     }
 
-    // public static void movePiece(Pieces piece, int id, char colour, int x, int y){
-    //     // if there is a piece or a empty space
-    //     int[] pos = getPosition(piece.getClass(), id, colour);
-    //     Square pieceSquare = getPiece(piece.getClass(), id, colour);
-    //     chessboard.get(pos[0]).set(pos[1], null);
-    //     chessboard.get(y).set(x, thePiece);
-    // }
+    /**
+     * Finds and returns the Square object containing a specific piece type, id, and color.
+     * @param type    the class representing the type of the piece
+     * @param id      the id of the piece
+     * @param colour  the color of the piece
+     * @return the Square object containing the specified piece, or null if not found
+     */
+    public static Square findSquare(Class<?> type, int id, char colour){
+        for (ArrayList<Square> squares : chessboard){
+            for(Square sq: squares){
+                if(sq.getPiece() != null && sq.getPiece().getClass().equals(type) && sq.getPiece().getId() == id && 
+                sq.getPiece().getColour() == colour){
+                    return sq;
+                }
+            }
+        }
+        return null;
+    }
 
+    /**
+     * Moves a piece to the specified position (x, y) on the chessboard.
+     * @param piece  the piece to move
+     * @param id     the id of the piece
+     * @param colour the color of the piece
+     * @param x      the x-coordinate to move the piece to
+     * @param y      the y-coordinate to move the piece to
+     */
+    public static void movePiece(Pieces piece, int id, char colour, int x, int y){
+        Square squareWithPiece = findSquare(piece.getClass(), id, colour);
+        chessboard.get(squareWithPiece.getCoords()[1]).get(squareWithPiece.getCoords()[0]).setPiece(null);
+        chessboard.get(y).get(x).setPiece(piece);
+    }
+
+    /**
+     * Instantiates the arraylists of squares in the chessboard.
+     */
     public static void instantiateSquares(){
         for (int i = 0; i < 8; i++){
             chessboard.add(new ArrayList<Square>());
         }
     }
 
+    /**
+     * Populates the chessboard with pieces in the correct positions.
+     */
     public static void populateInitialChessBoard(){
         //Loading all the images using the loadImage method.
         Image darkRook = loadImage("img/darkRook.png");
@@ -149,48 +202,4 @@ public class GameBoard extends JPanel {
         }
         
     }
-
-        //Create and add black pieces
-        // blackPieces.add(new Rook('B', 1, false, darkRook));
-        // blackPieces.add(new Knight('B', 1, false, darkKnight));
-        // blackPieces.add(new Bishop('B', 1, false, darkBishop));
-        // blackPieces.add(new King('B', 1, false, darkKing));
-        // blackPieces.add(new Queen('B', 1, false, darkQueen));
-        // blackPieces.add(new Bishop('B', 2, false, darkBishop));
-        // blackPieces.add(new Knight('B', 2, false, darkKnight));
-        // blackPieces.add(new Rook('B', 2, false, darkRook));
-
-        // chessboard.add(blackPieces);
-
-        // for (int i = 1; i < 9; i++) {
-        //     blackPawns.add(new Pawn('B', i, false, darkPawn));
-        // }
-        // chessboard.add(blackPawns);
-
-        // // Create and add the empty rows (rows 6 to 3)
-        // for (int i = 0; i < 4; i++) {
-        //     ArrayList<Pieces> emptyRow = new ArrayList<>();
-        //     for (int j = 0; j < 8; j++) {
-        //         emptyRow.add(null);
-        //     }
-        //     chessboard.add(emptyRow);
-        // }
-        
-        // // Create and add white pieces
-        // for (int i = 1; i < 9; i++) {
-        //     whitePawns.add(new Pawn('W', i, false, whitePawn));
-        // }
-
-        // chessboard.add(whitePawns);
-
-        // whitePieces.add(new Rook('W', 1, false, whiteRook));
-        // whitePieces.add(new Knight('W', 1, false,whiteKnight));
-        // whitePieces.add(new Bishop('W', 1, false, whiteBishop));
-        // whitePieces.add(new King('W', 1, false, whiteKing));
-        // whitePieces.add(new Queen('W', 1, false, whiteQueen));
-        // whitePieces.add(new Bishop('W', 2, false, whiteBishop));
-        // whitePieces.add(new Knight('W', 2, false, whiteKnight));
-        // whitePieces.add(new Rook('W', 2, false, whiteRook));
-
-        // chessboard.add(whitePieces);
 }
