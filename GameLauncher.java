@@ -10,7 +10,7 @@ public class GameLauncher extends JFrame {
       this.setBackground(new Color (41, 44, 44));
       this.setLocationRelativeTo(null);
       this.setTitle("Chess");
-      this.add(new GameBoard());
+      this.add(new ChessGui());
       this.pack();
   }
   public static void main(String[] args) {
