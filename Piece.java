@@ -20,6 +20,7 @@ public class Piece{
     private boolean isCaptured = false;
     private Image img;
     private int x, y;
+    private int width = 64, height = 64;
     // private int[] possiblePos;
 
     public Piece(Image img, int x, int y, int color, int type){
@@ -75,5 +76,29 @@ public class Piece{
 
     public int getY(){
         return y;
+    }
+
+    public void setX(int coordX){
+        this.x = coordX;
+    }
+
+    public void setY(int coordY){
+        this.y = coordY;
+    }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public void setWidth(int width){
+        this.width = width;
+    }
+
+    public void setHeight(int height){
+        this.height = height;
     }
 }
