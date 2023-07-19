@@ -26,7 +26,6 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -70,12 +69,10 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
     }
 
 }

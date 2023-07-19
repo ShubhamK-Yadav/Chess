@@ -11,14 +11,16 @@ import java.util.List;
  * Represents the game board for a chess game.
  */
 public class ChessGui extends JPanel {
-    private static final int WINDOW_WIDTH = 600, WINDOW_HEIGHT = 600;
-    private final int START_X = 50, START_Y = 50;
+    private static final int WINDOW_WIDTH = 700, WINDOW_HEIGHT = 700;
+    private final int START_X = 100, START_Y = 100;
     private static final int BOARD_WIDTH = 512, BOARD_HEIGHT = 512;
     private static final int SQUARE_SIZE = 64;
-    // private static int gameBlocks = BOARD_HEIGHT * BOARD_WIDTH / SQUARE_SIZE;
     private List<Piece> pieces = new ArrayList<Piece>();
-    // private static ArrayList <ArrayList<Square>> chessboard= new
-    // ArrayList<ArrayList<Square>>();
+
+    private int gameState = GAME_STATE_WHITE;
+    static final int GAME_STATE_WHITE = 0;
+    static final int GAME_STATE_BLACK = 1;
+    private JLabel lblGameState; 
 
     /**
      * Constructs a new GameBoard instance.
@@ -27,16 +29,43 @@ public class ChessGui extends JPanel {
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setFocusable(true);
         this.requestFocus();
+        this.setLayout(null);
 
-        // creates chess pieces and add them to the relevant squares in the chessboard
         populateInitialChessBoard();
         PiecesDragAndDropListener listener = new PiecesDragAndDropListener(this.pieces, this);
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
 
-        for (Piece piece : pieces){
-            System.out.println(piece.getX() + ", " + piece.getY());
+        JButton btnChangeState = new JButton("End turn");
+        btnChangeState.addActionListener(new ChangeGameStateButtonActionListener(this));
+        btnChangeState.setBounds(0,0, 100, 30);
+        this.add(btnChangeState);
+
+        // label to display game state
+        String labelText = this.getGameStateAsText();
+        this.lblGameState = new JLabel(labelText);
+        lblGameState.setBounds(0, 30, 80, 30);
+        lblGameState.setForeground(Color.WHITE);
+        this.add(lblGameState);
+    }
+
+    private String getGameStateAsText() {
+        return (this.gameState == GAME_STATE_BLACK ? "black" : "white");
+    }
+
+    public void changeGameState() {
+        switch (this.gameState){
+            case GAME_STATE_BLACK:
+                this.gameState = GAME_STATE_WHITE;
+                break;
+            case GAME_STATE_WHITE:
+                this.gameState = GAME_STATE_BLACK;
+                break;
+            default:
+                throw new IllegalStateException("unknown game state: " + this.gameState);
         }
+        System.out.println(this.gameState);
+        this.lblGameState.setText(this.getGameStateAsText());
     }
 
     /**
@@ -55,12 +84,18 @@ public class ChessGui extends JPanel {
         return img;
     }
 
+     /**
+     * @return current game state
+     */
+    public int getGameState() {
+        return this.gameState;
+    }
+
     /**
      * Overrides the paint method to render the chess board and pieces.
      * 
      * @param g the Graphics object to paint on
      */
-
     public void paint(Graphics g) {
         // Load all the piece images.
         Color lightBrown = new Color(241, 194, 192);
@@ -83,7 +118,7 @@ public class ChessGui extends JPanel {
                 if ((i + j) % 2 == 0) {
                     g.setColor(lightBrown);
                 }
-                g.fillRect(i * SQUARE_SIZE + 50, j * SQUARE_SIZE + 50, SQUARE_SIZE, SQUARE_SIZE);
+                g.fillRect(i * SQUARE_SIZE + START_X, j * SQUARE_SIZE + START_Y, SQUARE_SIZE, SQUARE_SIZE);
             }
         }
 
