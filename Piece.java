@@ -20,7 +20,6 @@ public class Piece{
     //eight rows (denoted with numbers 1 to 8 )
     //and eight columns (denoted with letters a to h)
     private int row;
- 
     public static final int ROW_1 = 0;
     public static final int ROW_2 = 1;
     public static final int ROW_3 = 2;
@@ -31,7 +30,6 @@ public class Piece{
     public static final int ROW_8 = 7;
  
     private int column;
- 
     public static final int COLUMN_A = 0;
     public static final int COLUMN_B = 1;
     public static final int COLUMN_C = 2;
@@ -42,15 +40,10 @@ public class Piece{
     public static final int COLUMN_H = 7;
  
     private boolean isCaptured = false;
-    private Image img;
-    private int x, y;
-    private int width = 64, height = 64;
-    // private int[] possiblePos;
 
-    public Piece(Image img, int x, int y, int color, int type){
-        this.img = img;
-        this.x = x;
-        this.y = y;
+    public Piece(int row, int column, int color, int type){
+        this.row = row;
+        this.column = column;
         colour = color;
         this.type = type;
     }
@@ -85,44 +78,19 @@ public class Piece{
         this.isCaptured = status;
     }
 
-    /**
-     * Returns the image representing the piece.
-     *
-     * @return the image representing the piece
-     */
-    public Image getImage() {
-        return img;
+    public int getRow(){
+        return row;
     }
 
-    public int getX(){
-        return x;
+    public int getColumn(){
+        return column;
     }
 
-    public int getY(){
-        return y;
+    public void setRow(int row){
+        this.row = row;
     }
 
-    public void setX(int coordX){
-        this.x = coordX;
-    }
-
-    public void setY(int coordY){
-        this.y = coordY;
-    }
-
-    public int getWidth(){
-        return width;
-    }
-
-    public int getHeight(){
-        return height;
-    }
-
-    public void setWidth(int width){
-        this.width = width;
-    }
-
-    public void setHeight(int height){
-        this.height = height;
+    public void setColumn(int column){
+        this.column = column;
     }
 }

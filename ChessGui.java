@@ -12,16 +12,18 @@ import java.util.List;
  */
 public class ChessGui extends JPanel {
     private static final int WINDOW_WIDTH = 700, WINDOW_HEIGHT = 700;
-    private final int START_X = 100, START_Y = 100;
+    private static final int START_X = 100, START_Y = 100;
     private static final int BOARD_WIDTH = 512, BOARD_HEIGHT = 512;
     private static final int SQUARE_SIZE = 64;
-    private List<Piece> pieces = new ArrayList<Piece>();
-
+    
     private int gameState = GAME_STATE_WHITE;
     static final int GAME_STATE_WHITE = 0;
-    static final int GAME_STATE_BLACK = 1;
-    private JLabel lblGameState; 
+	static final int GAME_STATE_BLACK = 1;
 
+    private JLabel lblGameState;
+    
+    private ChessGame chessGame;
+    private List<GuiPiece> guiPieces = new ArrayList<GuiPiece>();
     /**
      * Constructs a new GameBoard instance.
      */
@@ -31,8 +33,11 @@ public class ChessGui extends JPanel {
         this.requestFocus();
         this.setLayout(null);
 
-        populateInitialChessBoard();
-        PiecesDragAndDropListener listener = new PiecesDragAndDropListener(this.pieces, this);
+        this.chessGame = new ChessGame();
+        for (Piece piece : chessGame.getPieces()){
+            createAndAddPieceGui(piece);
+        }
+        PiecesDragAndDropListener listener = new PiecesDragAndDropListener(this.chessGame.getPieces(), this);
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
 
@@ -49,23 +54,63 @@ public class ChessGui extends JPanel {
         this.add(lblGameState);
     }
 
-    private String getGameStateAsText() {
-        return (this.gameState == GAME_STATE_BLACK ? "black" : "white");
+    public static int convertColumnToX(int column){
+        return START_X + SQUARE_SIZE * column;
     }
 
-    public void changeGameState() {
-        switch (this.gameState){
-            case GAME_STATE_BLACK:
-                this.gameState = GAME_STATE_WHITE;
-                break;
-            case GAME_STATE_WHITE:
-                this.gameState = GAME_STATE_BLACK;
-                break;
-            default:
-                throw new IllegalStateException("unknown game state: " + this.gameState);
+    public static int convertRowToY(int row){
+        return START_Y + SQUARE_SIZE * row;
+    }
+
+    public static int convertXToColumn(int x){
+        return (x - START_X) / SQUARE_SIZE;
+    }
+
+    public static int convertYToRow(int y){
+        return Piece.ROW_8 - (y - START_Y) / SQUARE_SIZE;
+    }
+    /**
+     * create a game piece
+     *
+     * @param color color constant
+     * @param type type constant
+     * @param x x position of upper left corner
+     * @param y y position of upper left corner
+     */
+    private void createAndAddPieceGui(Piece piece) {
+        Image img = this.getImageForPiece(piece.getColour(), piece.getType());
+        GuiPiece guiPiece = new GuiPiece(img, piece);
+        this.guiPieces.add(guiPiece);
+    }
+
+    public void setNewPieceLocation(GuiPiece dragPiece, int x, int y) {
+        int targetRow = ChessGui.convertYToRow(y);
+        int targetColumn = ChessGui.convertXToColumn(x);
+    
+        if (targetRow < Piece.ROW_1 || targetRow > Piece.ROW_8 || targetColumn < Piece.COLUMN_A || targetColumn > Piece.COLUMN_H) {
+            // Reset piece position if the move is not valid
+            dragPiece.setToUnderlyingPiecePositions();
+    
+        } else {
+            // Change model and update GUI piece afterwards
+            System.out.println("Moving piece to " + targetRow + "/" + targetColumn);
+            this.chessGame.movePiece(dragPiece.getPiece().getRow(), dragPiece.getPiece().getColumn(),
+                    targetRow, targetColumn);
+            // Assuming that resetToUnderlyingPiecePosition() sets the new position for the dragPiece
+            dragPiece.setToUnderlyingPiecePositions();
         }
-        System.out.println(this.gameState);
+    }   
+ 
+    /**
+     * switches between the different game states
+     */
+    public void changeGameState() {
+        this.chessGame.changeGameState();
         this.lblGameState.setText(this.getGameStateAsText());
+    }
+
+    private String getGameStateAsText() {
+        return (this.gameState == GAME_STATE_BLACK ? "black" : "white");
     }
 
     /**
@@ -82,13 +127,6 @@ public class ChessGui extends JPanel {
             System.out.println("Could not load " + url);
         }
         return img;
-    }
-
-     /**
-     * @return current game state
-     */
-    public int getGameState() {
-        return this.gameState;
     }
 
     /**
@@ -122,49 +160,9 @@ public class ChessGui extends JPanel {
             }
         }
 
-        for (Piece piece : pieces) {
+        for (GuiPiece piece : guiPieces) {
             g.drawImage(piece.getImage(), piece.getX(), piece.getY(), 64, 64, null);
         }
-    }
-
-    /**
-     * Populates the chessboard with pieces in the correct positions.
-     */
-    public void populateInitialChessBoard() {
-        // white pieces
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_ROOK, START_X + SQUARE_SIZE * 0, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_KNIGHT, START_X + SQUARE_SIZE * 1, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_BISHOP, START_X + SQUARE_SIZE * 2, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_KING, START_X + SQUARE_SIZE * 3, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_QUEEN, START_X + SQUARE_SIZE * 4, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_BISHOP, START_X + SQUARE_SIZE * 5, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_KNIGHT, START_X + SQUARE_SIZE * 6, START_Y + SQUARE_SIZE * 7);
-        createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_ROOK, START_X + SQUARE_SIZE * 7, START_Y + SQUARE_SIZE * 7);
-
-        // White pawns
-        for (int i = 0; i < 8; i++) {
-            createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_PAWN, START_X + SQUARE_SIZE * i, START_Y + SQUARE_SIZE * 6);
-        }
-
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_ROOK, START_X + SQUARE_SIZE * 0, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KNIGHT, START_X + SQUARE_SIZE * 1, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_BISHOP, START_X + SQUARE_SIZE * 2, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KING, START_X + SQUARE_SIZE * 3, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_QUEEN, START_X + SQUARE_SIZE * 4, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_BISHOP, START_X + SQUARE_SIZE * 5, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KNIGHT, START_X + SQUARE_SIZE * 6, START_Y + SQUARE_SIZE * 0);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_ROOK, START_X + SQUARE_SIZE * 7, START_Y + SQUARE_SIZE * 0);
-
-        // Black pawns
-        for (int i = 0; i < 8; i++) {
-            createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, START_X + SQUARE_SIZE * i, START_Y + SQUARE_SIZE * 1);
-        }
-    }
-
-    private void createAndAddPiece(int colour, int type, int x, int y) {
-        Image img = this.getImageForPiece(colour, type);
-        Piece piece = new Piece(img, x, y, colour, type);
-        this.pieces.add(piece);
     }
 
     private Image getImageForPiece(int colour, int type) {
