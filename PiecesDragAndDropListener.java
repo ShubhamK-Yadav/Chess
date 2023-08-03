@@ -3,39 +3,27 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
 
-public class PiecesDragAndDropListener implements MouseListener, MouseMotionListener{
-  private List<Piece> pieces;
-  private ChessGui chessGUI;
-  
-  public PiecesDragAndDropListener(List<Piece> pieces, ChessGui chessGUI){
-    this.pieces = pieces;
-    this.chessGUI = chessGUI;
-  }
-  @Override
-  public void mouseDragged(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseDragged'");
-  }
+public class PiecesDragAndDropListener implements MouseListener, MouseMotionListener {
+    private List<Piece> pieces;
+    private ChessGui chessGUI;
 
-  @Override
-  public void mouseMoved(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseMoved'");
-  }
+    private Piece dragPiece;
+    private int dragOffsetX, dragOffsetY;
 
-  @Override
-  public void mouseClicked(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
-  }
+    public PiecesDragAndDropListener(List<Piece> pieces, ChessGui chessGUI) {
+        this.pieces = pieces;
+        this.chessGUI = chessGUI;
+    }
 
-  @Override
-  public void mousePressed(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
-  }
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (this.dragPiece != null) {
+            this.dragPiece.setX(e.getPoint().x - this.dragOffsetX);
+            this.dragPiece.setY((e.getPoint().y - this.dragOffsetY));
+            this.chessGUI.repaint();
+        }
+    }
 
-<<<<<<< HEAD
     @Override
     public void mouseMoved(MouseEvent e) {
     }
@@ -86,24 +74,5 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
     @Override
     public void mouseExited(MouseEvent e) {
     }
-=======
-  @Override
-  public void mouseReleased(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-  }
 
-  @Override
-  public void mouseEntered(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-  }
->>>>>>> parent of d1a1b5d (Implementing simple drag and drop mechanics for the pieces. Currently no rule enforcement.)
-
-  @Override
-  public void mouseExited(MouseEvent e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
-  }
-  
 }

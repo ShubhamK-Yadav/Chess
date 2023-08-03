@@ -1,5 +1,3 @@
-import java.awt.Image;
-
 /**
  * Represents a chess piece.
  */
@@ -40,12 +38,6 @@ public class Piece{
     public static final int COLUMN_H = 7;
  
     private boolean isCaptured = false;
-<<<<<<< HEAD
-=======
-    private Image img;
-    private int x, y;
-    // private int[] possiblePos;
->>>>>>> parent of d1a1b5d (Implementing simple drag and drop mechanics for the pieces. Currently no rule enforcement.)
 
     public Piece(int row, int column, int color, int type){
         this.row = row;
@@ -95,11 +87,8 @@ public class Piece{
     public void setRow(int row){
         this.row = row;
     }
-<<<<<<< HEAD
 
     public void setColumn(int column){
         this.column = column;
     }
-=======
->>>>>>> parent of d1a1b5d (Implementing simple drag and drop mechanics for the pieces. Currently no rule enforcement.)
 }
