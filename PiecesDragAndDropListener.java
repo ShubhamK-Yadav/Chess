@@ -4,13 +4,13 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 public class PiecesDragAndDropListener implements MouseListener, MouseMotionListener {
-    private List<Piece> pieces;
+    private List<GuiPiece> pieces;
     private ChessGui chessGUI;
 
-    private Piece dragPiece;
+    private GuiPiece dragPiece;
     private int dragOffsetX, dragOffsetY;
 
-    public PiecesDragAndDropListener(List<Piece> pieces, ChessGui chessGUI) {
+    public PiecesDragAndDropListener(List<GuiPiece> pieces, ChessGui chessGUI) {
         this.pieces = pieces;
         this.chessGUI = chessGUI;
     }
@@ -38,12 +38,12 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
         int coordY = e.getPoint().y;
 
         for (int i = this.pieces.size() - 1; i >= 0; i--) {
-            Piece piece = this.pieces.get(i);
+            GuiPiece piece = this.pieces.get(i);
 
             if (mouseOverPiece(piece, coordX, coordY)) {
                 this.dragOffsetX = coordX - piece.getX();
                 this.dragOffsetY = coordY - piece.getY();
-                System.out.println("DragOffsetX: " + this.dragOffsetX + " and " + "DragOffsetY: " + this.dragOffsetY);
+                //System.out.println("DragOffsetX: " + this.dragOffsetX + " and " + "DragOffsetY: " + this.dragOffsetY);
                 this.dragPiece = piece;
                 break;
             }
@@ -60,7 +60,7 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
         this.dragPiece = null;
     }
 
-    public boolean mouseOverPiece(Piece piece, int x, int y) {
+    public boolean mouseOverPiece(GuiPiece piece, int x, int y) {
         return piece.getX() <= x
                 && piece.getX() + piece.getWidth() >= x
                 && piece.getY() <= y

@@ -29,7 +29,7 @@ public class ChessGame {
         // White pawns
 		int currentColumn = Piece.COLUMN_A;
         for (int i = 0; i < 8; i++) {
-            createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_PAWN, Piece.ROW_1, currentColumn);
+            createAndAddPiece(Piece.COLOR_WHITE, Piece.TYPE_PAWN, Piece.ROW_2, currentColumn);
 			currentColumn++;
         }
 
@@ -71,7 +71,7 @@ public class ChessGame {
     }
 
     //iterate through the pieces and find the pieces that match the parameters and return those pieces.
-    private Piece getNonCapturedPieceOnPosition(int row, int column){
+    public Piece getNonCapturedPieceOnPosition(int row, int column){
         for (Piece piece : pieces){
             if(piece.getRow() == row && piece.getColumn() == column && piece.isCaptured() == false){
                 return piece;
@@ -106,7 +106,7 @@ public class ChessGame {
                 this.gameState = GAME_STATE_BLACK;
                 break;
             default:
-                throw new IllegalStateException("unknown game state: " + this.gameState);
+                throw new IllegalStateException("Unknown game state: " + this.gameState);
         }
         System.out.println(this.gameState);
     }

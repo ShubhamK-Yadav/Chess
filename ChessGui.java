@@ -37,7 +37,8 @@ public class ChessGui extends JPanel {
         for (Piece piece : chessGame.getPieces()){
             createAndAddPieceGui(piece);
         }
-        PiecesDragAndDropListener listener = new PiecesDragAndDropListener(this.chessGame.getPieces(), this);
+
+        PiecesDragAndDropListener listener = new PiecesDragAndDropListener(this.getGuiPieces(), this);
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
 
@@ -50,7 +51,8 @@ public class ChessGui extends JPanel {
         String labelText = this.getGameStateAsText();
         this.lblGameState = new JLabel(labelText);
         lblGameState.setBounds(0, 30, 80, 30);
-        lblGameState.setForeground(Color.WHITE);
+        lblGameState.setBackground(Color.WHITE);
+        lblGameState.setForeground(Color.BLACK);
         this.add(lblGameState);
     }
 
@@ -94,8 +96,8 @@ public class ChessGui extends JPanel {
         } else {
             // Change model and update GUI piece afterwards
             System.out.println("Moving piece to " + targetRow + "/" + targetColumn);
-            this.chessGame.movePiece(dragPiece.getPiece().getRow(), dragPiece.getPiece().getColumn(),
-                    targetRow, targetColumn);
+            //this.chessGame.movePiece(dragPiece.getPiece().getRow(), dragPiece.getPiece().getColumn(),
+                    //targetRow, targetColumn);
             // Assuming that resetToUnderlyingPiecePosition() sets the new position for the dragPiece
             dragPiece.setToUnderlyingPiecePositions();
         }
@@ -129,42 +131,6 @@ public class ChessGui extends JPanel {
         return img;
     }
 
-    /**
-     * Overrides the paint method to render the chess board and pieces.
-     * 
-     * @param g the Graphics object to paint on
-     */
-    public void paint(Graphics g) {
-        // Load all the piece images.
-        Color lightBrown = new Color(241, 194, 192);
-        Color burntUmber = new Color(154, 77, 43);
-        g.setColor(new Color (41, 44, 44));
-        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        // render the chess board
-        for (int i = 0; i < BOARD_WIDTH / SQUARE_SIZE; i++) {
-            // Creating a grid for the chess board
-            // g.drawLine(i * SQUARE_SIZE + START_X, 50, i * SQUARE_SIZE + START_Y, 512);
-            // g.drawLine(50, i * SQUARE_SIZE + START_X, BOARD_HEIGHT, i * SQUARE_SIZE + START_Y);
-            // System.out.println("I value is " + i);
-
-            for (int j = 0; j < BOARD_HEIGHT / SQUARE_SIZE; j++) {
-                // System.out.println("J value is: " + j);
-                g.setColor(burntUmber);
-
-                // check if the tile is a even tile, it is then chaange colour to lightBrown.
-                if ((i + j) % 2 == 0) {
-                    g.setColor(lightBrown);
-                }
-                g.fillRect(i * SQUARE_SIZE + START_X, j * SQUARE_SIZE + START_Y, SQUARE_SIZE, SQUARE_SIZE);
-            }
-        }
-
-        for (GuiPiece piece : guiPieces) {
-            g.drawImage(piece.getImage(), piece.getX(), piece.getY(), 64, 64, null);
-        }
-    }
-
     private Image getImageForPiece(int colour, int type) {
         String filename = "img/";
 
@@ -193,5 +159,40 @@ public class ChessGui extends JPanel {
         filename += ".png";
         Image img = loadImage(filename);
         return img;
+    }
+
+    public void paint(Graphics g) {
+        // Load all the piece images.
+        Color lightBrown = new Color(241, 194, 192);
+        Color burntUmber = new Color(154, 77, 43);
+        g.setColor(new Color (41, 44, 44));
+        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        // render the chess board
+        for (int i = 0; i < BOARD_WIDTH / SQUARE_SIZE; i++) {
+            // Creating a grid for the chess board
+            // g.drawLine(i * SQUARE_SIZE + START_X, 50, i * SQUARE_SIZE + START_Y, 512);
+            // g.drawLine(50, i * SQUARE_SIZE + START_X, BOARD_HEIGHT, i * SQUARE_SIZE + START_Y);
+            // System.out.println("I value is " + i);
+
+            for (int j = 0; j < BOARD_HEIGHT / SQUARE_SIZE; j++) {
+                // System.out.println("J value is: " + j);
+                g.setColor(burntUmber);
+
+                // check if the tile is a even tile, it is then chaange colour to lightBrown.
+                if ((i + j) % 2 == 0) {
+                    g.setColor(lightBrown);
+                }
+                g.fillRect(i * SQUARE_SIZE + START_X, j * SQUARE_SIZE + START_Y, SQUARE_SIZE, SQUARE_SIZE);
+            }
+        }
+
+        for (GuiPiece piece : guiPieces) {
+            g.drawImage(piece.getImage(), piece.getX(), piece.getY(), piece.getWidth(), piece.getHeight(), null);
+        }
+    }
+
+    public List<GuiPiece> getGuiPieces(){
+        return guiPieces;
     }
 }

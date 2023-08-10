@@ -4,6 +4,7 @@ public class GuiPiece {
 	private Image pieceImg;
 	private Piece piece;
 	private int x, y;
+	private int width = 64, height = 64;
 
 	public GuiPiece(Image img, Piece piece) {
 		pieceImg = img;
@@ -31,5 +32,21 @@ public class GuiPiece {
 
 	public int getY() {
 		return y;
+	}
+
+	public void setX(int x){
+		this.x = x;
+	}
+
+	public void setY(int y){
+		this.y = y;
+	}
+
+	public int getWidth(){
+		return width;
+	}
+
+	public int getHeight(){
+		return height;
 	}
 }
