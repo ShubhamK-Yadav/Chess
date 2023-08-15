@@ -23,6 +23,8 @@ public class ConsoleGui {
 				} else {
 					this.handleMove(input);
 					this.chessGame.changeGameState();
+					this.printCurrentGameState();
+					System.out.println("Please enter a valid move. e.g: e2-e5");
 				}
 			} catch (Exception e) {
 				System.out.println(e.getClass() + ": " + e.getMessage());
