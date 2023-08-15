@@ -50,7 +50,7 @@ public class ConsoleGui {
 			srcRow = convertRowStrToRowInt(srcRowString);
 			tarCol = convertColumnStrToColumnInt(targetColString);
 			tarRow = convertRowStrToRowInt(targetRowString);
-			//chessGame.movePiece(srcRow, srcCol, tarRow, tarCol);
+			chessGame.movePiece(srcRow, srcCol, tarRow, tarCol);
 		}
 	}
 

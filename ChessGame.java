@@ -8,8 +8,11 @@ public class ChessGame {
 	static final int GAME_STATE_WHITE = 0;
 	static final int GAME_STATE_BLACK = 1;
 
+    private MoveValidator moveValidator;
+
 	public ChessGame(){
         populateInitialChessBoard();
+        moveValidator = new MoveValidator(this);
 	}
 
 	/**
@@ -70,6 +73,23 @@ public class ChessGame {
         piece.setColumn(column);
     }
 
+    public void movePiece(int sourceRow, int sourceCol, int targetRow, int targetCol){
+        if (this.moveValidator.isMoveValid(sourceRow, sourceCol, targetRow, targetRow) == false){
+            System.out.println("Invalid move!");
+            return;
+        }
+
+        Piece piece = this.getNonCapturedPieceOnPosition(sourceRow, sourceCol);
+
+        int opponentColour = (piece.getColour()==Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
+        if (this.isPieceNonCapturedOnPosition(opponentColour, targetRow, targetCol)){
+            Piece oppPiece = getNonCapturedPieceOnPosition(targetRow, targetCol);
+            oppPiece.setCaptured(true);
+        }
+        piece.setRow(targetRow);
+        piece.setColumn(targetCol);
+    }
+
     //iterate through the pieces and find the pieces that match the parameters and return those pieces.
     public Piece getNonCapturedPieceOnPosition(int row, int column){
         for (Piece piece : pieces){
@@ -80,7 +100,7 @@ public class ChessGame {
         return null;
     }
 
-    private boolean isPieceNonCapturedOnPosition(int colour, int row, int column){
+    public boolean isPieceNonCapturedOnPosition(int colour, int row, int column){
         for (Piece piece : pieces){
             if (piece.getColour() == colour && piece.getRow() == row &&
                  piece.getColumn() == column && piece.isCaptured() == false){
