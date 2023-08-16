@@ -58,6 +58,10 @@ public class Piece{
     public int getType(){
         return type;
     }
+
+    public int setType(int type){
+        return this.type = type;
+    }
     /**
      * Checks if the piece is killed.
      *

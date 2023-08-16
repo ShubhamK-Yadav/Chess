@@ -40,7 +40,7 @@ public class ChessGame {
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KNIGHT, Piece.ROW_8, Piece.COLUMN_B);
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_BISHOP, Piece.ROW_8, Piece.COLUMN_C);
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_QUEEN, Piece.ROW_8, Piece.COLUMN_D);
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KING, Piece.ROW_6, Piece.COLUMN_E);
+        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KING, Piece.ROW_8, Piece.COLUMN_E);
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_BISHOP, Piece.ROW_8, Piece.COLUMN_F);
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_KNIGHT, Piece.ROW_8, Piece.COLUMN_G);
         createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_ROOK, Piece.ROW_8, Piece.COLUMN_H);
@@ -51,6 +51,7 @@ public class ChessGame {
             createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, Piece.ROW_7, currentColumn);
             currentColumn++;
         }
+        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, Piece.ROW_3, Piece.COLUMN_A);
     }
 
     private void createAndAddPiece(int colour, int type, int row, int column) {
@@ -74,7 +75,7 @@ public class ChessGame {
     }
 
     public void movePiece(int sourceRow, int sourceCol, int targetRow, int targetCol){
-        if (this.moveValidator.isMoveValid(sourceRow, sourceCol, targetRow, targetRow) == false){
+        if (!this.moveValidator.isMoveValid(sourceRow, sourceCol, targetRow, targetCol)){
             System.out.println("Invalid move!");
             return;
         }

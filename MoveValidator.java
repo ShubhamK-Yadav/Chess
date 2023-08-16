@@ -8,6 +8,7 @@ public class MoveValidator {
 	public boolean isMoveValid(int sourceRow, int sourceCol, int targetRow, int targetCol){
 		Piece srcPiece = chessGame.getNonCapturedPieceOnPosition(sourceRow, sourceCol);
 		Piece tarPiece = chessGame.getNonCapturedPieceOnPosition(targetRow, targetCol);
+		int opponentColour = (chessGame.getGameState() == Piece.COLOR_BLACK ? Piece.COLOR_WHITE : Piece.COLOR_BLACK);
 
 		if (srcPiece == null){
 			return false;
@@ -34,7 +35,11 @@ public class MoveValidator {
 				isPieceMoveValid = isMoveValidKing(sourceRow, sourceRow, targetRow, targetCol);
 				break;
 			case Piece.TYPE_PAWN:
-				isPieceMoveValid = isMoveValidPawn(sourceRow, sourceRow, targetRow, targetCol);
+				if(srcPiece.getColour() == Piece.COLOR_WHITE){
+					isPieceMoveValid = isMoveValidPawnWhite(sourceRow, sourceCol, targetRow, targetCol);
+				} else {
+					isPieceMoveValid = isMoveValidPawnBlack(sourceRow, sourceRow, targetRow, targetCol);
+				}
 				break;
 			case Piece.TYPE_QUEEN:
 				isPieceMoveValid = isMoveValidQueen(sourceRow, sourceRow, targetRow, targetCol);
@@ -49,8 +54,14 @@ public class MoveValidator {
 		if (!isPieceMoveValid){
 			return false;
 		}
+
+		if(tarPiece != null && !tarPiece.isCaptured() && tarPiece.getColour() == opponentColour){
+			tarPiece.setCaptured(true);
+		}
 		return true;
 	}
+
+	
 
 	private boolean isMoveValidRook(int sourceRow, int sourceCol, int targetRow, int targetCol) {
 		return false;
@@ -60,7 +71,50 @@ public class MoveValidator {
 		return false;
 	}
 
-	private boolean isMoveValidPawn(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+	private boolean isMoveValidPawnWhite(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		int rowDifference = targetRow - sourceRow;
+		int colDifference = targetCol - sourceCol;
+		
+		//capturing with a pawn
+		if (rowDifference == 1 && (colDifference == -1 || colDifference == 1)){
+			//move down left or down right if there is a capturable piece there
+			return isTargetLocationCapturable(targetRow, targetCol);
+		}
+
+		if (sourceRow == Piece.ROW_2){
+			if (rowDifference == 1){
+				return isTargetLocationFree(targetRow, targetCol);
+			} else if (rowDifference == 2){
+				return isTargetLocationFree(targetRow, targetCol) && isTargetLocationFree(targetRow-1 , targetCol);
+			}
+		} else {
+			return rowDifference == 1 && isTargetLocationFree(targetRow, targetCol);
+		}
+		return false;
+	}
+
+	private boolean isMoveValidPawnBlack(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		//calculates the difference between the rows and cols to validate movement.
+		int rowDifference = targetRow - sourceRow;
+		int colDifference = targetCol - sourceCol;
+
+		//capturing with a pawn
+		if (rowDifference == -1 && (colDifference == -1 || colDifference == 1)){
+			//move down left or down right if there is a capturable piece there
+			return isTargetLocationCapturable(targetRow, targetCol);
+		}
+
+		//movement forward
+		if (sourceRow == Piece.ROW_7){
+			// if piece at start, it can move 1 step or 2 steps.
+			if (rowDifference == -1){
+				return isTargetLocationFree(targetRow, targetCol);
+			} else if (rowDifference == -2){
+				return isTargetLocationFree(targetRow, targetCol) && isTargetLocationFree(targetRow+1 , targetCol);
+			}
+		} else {
+			return rowDifference == -1 && isTargetLocationFree(targetRow, targetCol);
+		}
 		return false;
 	}
 
@@ -70,34 +124,24 @@ public class MoveValidator {
 			System.out.println("OR target location is not capturable");
 			return false;
 		} else {
-			System.out.println("The location is free and capturable");
+			System.out.println("The location is free or capturable");
 		}
 
-		if (sourceCol+1 == targetCol && sourceRow + 1 == targetRow){
-			//move up and right
-			return true;
-		} else if (sourceCol - 1 == targetCol && sourceRow + 1 == targetRow){
-			//move up and left
-			return true;
-		} else if (sourceCol - 1 == targetCol && sourceRow - 1 == targetRow){
-			//move down and left
-			return true;
-		} else if (sourceCol + 1 == targetCol && sourceRow - 1 == targetRow){
-			//move down and right
-			return true;
-		} else if (sourceRow + 1 == targetRow && sourceCol == targetCol){
-			//move up
-			return true;
-		} else if (sourceRow == targetRow && sourceCol + 1 == targetCol){
-			//move right
-			return true;
-		} else if (sourceRow - 1 == targetRow && sourceCol == targetCol){
-			//move down
-			return true;
-		} else if (sourceRow == targetRow && sourceCol -1 == targetCol){
-			return true;
+		int rowDifference = Math.abs(targetRow - sourceRow);
+		int colDifference = Math.abs(targetCol - sourceCol);
+
+		//no movement
+		if (rowDifference == 0 && colDifference == 0){
+			return false;
 		}
 
+		//movement in a direction
+		if (rowDifference <= 1 && colDifference <= 1){
+			return true;
+		} else if ( rowDifference == colDifference){
+			//diagnal movement
+			return true;
+		}
 		return false;
 	}
 
