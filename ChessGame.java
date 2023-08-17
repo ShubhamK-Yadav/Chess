@@ -51,7 +51,7 @@ public class ChessGame {
             createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, Piece.ROW_7, currentColumn);
             currentColumn++;
         }
-        createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, Piece.ROW_3, Piece.COLUMN_A);
+        //createAndAddPiece(Piece.COLOR_BLACK, Piece.TYPE_PAWN, Piece.ROW_3, Piece.COLUMN_A);
     }
 
     private void createAndAddPiece(int colour, int type, int row, int column) {

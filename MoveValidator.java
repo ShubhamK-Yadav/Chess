@@ -26,26 +26,26 @@ public class MoveValidator {
 
 		switch(srcPiece.getType()){
 			case Piece.TYPE_BISHOP:
-				isPieceMoveValid = isMoveValidBishop(sourceRow, sourceRow, targetRow, targetCol);
+				isPieceMoveValid = isMoveValidBishop(sourceRow, sourceCol, targetRow, targetCol);
 				break;
 			case Piece.TYPE_KNIGHT:
-				isPieceMoveValid = isMoveValidKnight(sourceRow, sourceRow, targetRow, targetCol);
+				isPieceMoveValid = isMoveValidKnight(sourceRow, sourceCol, targetRow, targetCol);
 				break;
 			case Piece.TYPE_KING:
-				isPieceMoveValid = isMoveValidKing(sourceRow, sourceRow, targetRow, targetCol);
+				isPieceMoveValid = isMoveValidKing(sourceRow, sourceCol, targetRow, targetCol);
 				break;
 			case Piece.TYPE_PAWN:
 				if(srcPiece.getColour() == Piece.COLOR_WHITE){
 					isPieceMoveValid = isMoveValidPawnWhite(sourceRow, sourceCol, targetRow, targetCol);
 				} else {
-					isPieceMoveValid = isMoveValidPawnBlack(sourceRow, sourceRow, targetRow, targetCol);
+					isPieceMoveValid = isMoveValidPawnBlack(sourceRow, sourceCol, targetRow, targetCol);
 				}
 				break;
 			case Piece.TYPE_QUEEN:
-				isPieceMoveValid = isMoveValidQueen(sourceRow, sourceRow, targetRow, targetCol);
+				isPieceMoveValid = isMoveValidQueen(sourceRow, sourceCol, targetRow, targetCol);
 				break;
 			case Piece.TYPE_ROOK:
-				isPieceMoveValid = isMoveValidRook(sourceRow, sourceRow, targetRow, targetCol);
+				isPieceMoveValid = isMoveValidRook(sourceRow, sourceCol, targetRow, targetCol);
 				break;
 			default: 
 				break;
@@ -59,16 +59,6 @@ public class MoveValidator {
 			tarPiece.setCaptured(true);
 		}
 		return true;
-	}
-
-	
-
-	private boolean isMoveValidRook(int sourceRow, int sourceCol, int targetRow, int targetCol) {
-		return false;
-	}
-
-	private boolean isMoveValidQueen(int sourceRow, int sourceCol, int targetRow, int targetCol) {
-		return false;
 	}
 
 	private boolean isMoveValidPawnWhite(int sourceRow, int sourceCol, int targetRow, int targetCol) {
@@ -118,6 +108,69 @@ public class MoveValidator {
 		return false;
 	}
 
+	private boolean isMoveValidRook(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+
+		int rowDifference = Math.abs(targetRow - sourceRow);
+		int colDifference = Math.abs(targetCol - sourceCol);
+
+		if (rowDifference != 0 && colDifference != 0) {
+			// Rooks can only move along rows or columns, not diagonally
+			return false;
+		}
+		
+
+		int start, end, step;
+		//check for pieces from its location to target location
+		// if there are any pieces in its path, invalid move.
+		if (rowDifference != 0){
+			start = Math.min(sourceRow, targetRow);
+			end = Math.max(sourceRow, targetRow);
+			step = 1;
+        
+			for (int row = start; row < end; row += step) {
+				if (!isTargetLocationFree(row, targetCol) && !isTargetLocationCapturable(row, targetCol)) {
+					return false;
+				}
+			}	
+		} else if (colDifference != 0){
+			start = Math.min(sourceCol, targetCol) + 1;
+			end = Math.max(sourceCol, targetCol);
+			step = sourceCol < targetCol ? 1 : -1;
+        
+			for (int col = start; col < end; col += step) {
+				if (!isTargetLocationFree(targetRow, col) && !isTargetLocationCapturable(targetRow, col)) {
+					return false;
+				}
+			}		
+		}
+		return false;
+	}
+
+	private boolean isMoveValidKnight(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		int rowDifference = targetRow - sourceRow;
+		int colDifference = targetCol - sourceCol;
+
+		if(!isTargetLocationCapturable(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol)){
+			return false;
+		}
+
+		if ((rowDifference == 2 || rowDifference == -2) && (colDifference == 1 || colDifference == -1)){
+			//up down movement (2 up/down and 1 left/right)
+			return true;
+		} else if ((colDifference == 2 || colDifference == -2) && (rowDifference == 1 || rowDifference == -1)){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isMoveValidBishop(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		return false;
+	}
+
+	private boolean isMoveValidQueen(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		return false;
+	}
+
 	private boolean isMoveValidKing(int sourceRow, int sourceCol, int targetRow, int targetCol) {
 		if (!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationCapturable(targetRow, targetCol)){
 			System.out.println("The target location is not free");
@@ -136,20 +189,12 @@ public class MoveValidator {
 		}
 
 		//movement in a direction
-		if (rowDifference <= 1 && colDifference <= 1){
-			return true;
-		} else if ( rowDifference == colDifference){
+		if ((rowDifference > 1 && rowDifference < -1) || (colDifference > 1 && colDifference < -1)){
+			return false;
+		} else if ( rowDifference == colDifference && rowDifference == 1 && colDifference == 1){
 			//diagnal movement
 			return true;
 		}
-		return false;
-	}
-
-	private boolean isMoveValidKnight(int sourceRow, int sourceCol, int targetRow, int targetCol) {
-		return false;
-	}
-
-	private boolean isMoveValidBishop(int sourceRow, int sourceCol, int targetRow, int targetCol) {
 		return false;
 	}
 
