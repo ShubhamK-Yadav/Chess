@@ -109,6 +109,10 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidRook(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		if(!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol)){
+			return false;
+		}
+		//return (!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol));
 
 		int rowDifference = Math.abs(targetRow - sourceRow);
 		int colDifference = Math.abs(targetCol - sourceCol);
@@ -118,32 +122,31 @@ public class MoveValidator {
 			return false;
 		}
 		
-
 		int start, end, step;
 		//check for pieces from its location to target location
 		// if there are any pieces in its path, invalid move.
 		if (rowDifference != 0){
-			start = Math.min(sourceRow, targetRow);
+			start = Math.min(sourceRow, targetRow) + 1;
 			end = Math.max(sourceRow, targetRow);
-			step = 1;
+			step = sourceRow < targetRow ? 1 : -1;
         
 			for (int row = start; row < end; row += step) {
-				if (!isTargetLocationFree(row, targetCol) && !isTargetLocationCapturable(row, targetCol)) {
+				if (!isTargetLocationFree(row, targetCol)){
 					return false;
 				}
-			}	
+			}
 		} else if (colDifference != 0){
-			start = Math.min(sourceCol, targetCol) + 1;
+			start = Math.min(sourceCol, targetCol);
 			end = Math.max(sourceCol, targetCol);
-			step = sourceCol < targetCol ? 1 : -1;
-        
-			for (int col = start; col < end; col += step) {
-				if (!isTargetLocationFree(targetRow, col) && !isTargetLocationCapturable(targetRow, col)) {
+      step = sourceCol < targetCol ? 1 : -1;
+
+			for (int col = start; col < end; col+= step) {
+				if (!isTargetLocationFree(targetRow, col)) {
 					return false;
 				}
-			}		
+			}
 		}
-		return false;
+		return true;
 	}
 
 	private boolean isMoveValidKnight(int sourceRow, int sourceCol, int targetRow, int targetCol) {
@@ -164,6 +167,23 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidBishop(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		int rowDifference = Math.abs(targetRow - sourceRow);
+		int colDifference = Math.abs(targetCol - sourceCol);
+
+		if(rowDifference == colDifference){
+			int stepRow = (targetRow > sourceRow) ? 1 : -1;
+      int stepCol = (targetCol > sourceCol) ? 1 : -1;
+
+			//start from 1 to the rowDifference & colDifference to iterate through the tiles in path.
+			for (int steps = 1; steps <= rowDifference; steps++){
+				int checkRow = sourceRow + steps * stepRow;
+				int checkCol = sourceCol + steps * stepCol;
+				if (!isTargetLocationFree(checkRow, checkCol) && !isTargetLocationCapturable(checkRow, checkCol)) {
+					return false;
+				}
+			}
+			return true;
+		}
 		return false;
 	}
 
