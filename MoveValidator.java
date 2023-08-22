@@ -149,17 +149,17 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidKnight(int sourceRow, int sourceCol, int targetRow, int targetCol) {
-		int rowDifference = targetRow - sourceRow;
-		int colDifference = targetCol - sourceCol;
+		int rowDifference = Math.abs(targetRow - sourceRow);
+		int colDifference = Math.abs(targetCol - sourceCol);
 
 		if(!isTargetLocationCapturable(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol)){
 			return false;
 		}
 
-		if ((rowDifference == 2 || rowDifference == -2) && (colDifference == 1 || colDifference == -1)){
+		if ((rowDifference == 2) && (colDifference == 1)){
 			//up down movement (2 up/down and 1 left/right)
 			return true;
-		} else if ((colDifference == 2 || colDifference == -2) && (rowDifference == 1 || rowDifference == -1)){
+		} else if ((colDifference == 2) && (rowDifference == 1)){
 			return true;
 		}
 		return false;
@@ -193,16 +193,62 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidQueen(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		if (!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationCapturable(targetRow, targetCol)){
+			return false;
+		}
+
+		int rowDifference = Math.abs(targetRow - sourceRow);
+		int colDifference = Math.abs(targetCol - sourceCol);
+		int start, end;
+
+		// diagonal path checks
+		if(rowDifference == colDifference){
+			//checks a condition and assign a positive/negative value to the stepping variable.
+			int stepRow = (targetRow > sourceRow) ? 1 : -1;
+      int stepCol = (targetCol > sourceCol) ? 1 : -1;
+
+			for (int step = 1; step < rowDifference; step++){
+				//calculating which row and col to check
+				int checkRow = sourceRow + step * stepRow;
+				int checkCol = sourceCol + step * stepCol;
+				//System.out.println( checkRow + ", " + checkCol);
+				if (!isTargetLocationFree(checkRow, checkCol)) {
+					return false;
+				}
+			}
+			return true;
+		} 
+		
+		//checking straight paths from source to target
+		if (rowDifference != 0){
+			start = sourceRow < targetRow ? sourceRow + 1 : targetRow;
+			end = sourceRow > targetRow ? sourceRow : targetRow;
+			System.out.println("Start is " + start + " and End is: " + end);
+        
+			for (int row = start; row < end; row ++) {
+				if (!isTargetLocationFree(row, targetCol)){
+					return false;
+				}
+			}
+			return true;
+		} else if (colDifference != 0){
+			start = sourceCol < targetCol ? sourceCol : targetCol;
+			end = sourceCol > targetCol ? sourceCol : targetCol;
+
+			for (int col = start; col < end; col++) {
+				if (!isTargetLocationFree(targetRow, col)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 		return false;
 	}
 
 	private boolean isMoveValidKing(int sourceRow, int sourceCol, int targetRow, int targetCol) {
 		if (!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationCapturable(targetRow, targetCol)){
-			System.out.println("The target location is not free");
-			System.out.println("OR target location is not capturable");
 			return false;
-		} else {
-			System.out.println("The location is free or capturable");
 		}
 
 		int rowDifference = Math.abs(targetRow - sourceRow);
