@@ -76,7 +76,7 @@ public class ChessGame {
 
     public void movePiece(int sourceRow, int sourceCol, int targetRow, int targetCol){
         if (!this.moveValidator.isMoveValid(sourceRow, sourceCol, targetRow, targetCol)){
-            System.out.println("Invalid move!");
+            System.out.println("Invalid move! Please enter a valid move.");
             return;
         }
 
@@ -89,6 +89,7 @@ public class ChessGame {
         }
         piece.setRow(targetRow);
         piece.setColumn(targetCol);
+        this.changeGameState();
     }
 
     //iterate through the pieces and find the pieces that match the parameters and return those pieces.

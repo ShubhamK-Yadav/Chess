@@ -109,7 +109,7 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidRook(int sourceRow, int sourceCol, int targetRow, int targetCol) {
-		if(!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol)){
+		if(!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationCapturable(targetRow, targetCol)){
 			return false;
 		}
 		//return (!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationFree(targetRow, targetCol));
@@ -122,25 +122,24 @@ public class MoveValidator {
 			return false;
 		}
 		
-		int start, end, step;
+		int start, end;
 		//check for pieces from its location to target location
 		// if there are any pieces in its path, invalid move.
 		if (rowDifference != 0){
-			start = Math.min(sourceRow, targetRow) + 1;
-			end = Math.max(sourceRow, targetRow);
-			step = sourceRow < targetRow ? 1 : -1;
+			start = sourceRow < targetRow ? sourceRow + 1 : targetRow;
+			end = sourceRow > targetRow ? sourceRow : targetRow;
+			System.out.println("Start is " + start + " and End is: " + end);
         
-			for (int row = start; row < end; row += step) {
+			for (int row = start; row < end; row ++) {
 				if (!isTargetLocationFree(row, targetCol)){
 					return false;
 				}
 			}
 		} else if (colDifference != 0){
-			start = Math.min(sourceCol, targetCol);
-			end = Math.max(sourceCol, targetCol);
-      step = sourceCol < targetCol ? 1 : -1;
+			start = sourceCol < targetCol ? sourceCol : targetCol;
+			end = sourceCol > targetCol ? sourceCol : targetCol;
 
-			for (int col = start; col < end; col+= step) {
+			for (int col = start; col < end; col++) {
 				if (!isTargetLocationFree(targetRow, col)) {
 					return false;
 				}
@@ -167,18 +166,24 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidBishop(int sourceRow, int sourceCol, int targetRow, int targetCol) {
+		if(!isTargetLocationFree(targetRow, targetCol) && !isTargetLocationCapturable(targetRow, targetCol)){
+			return false;
+		}
+		
 		int rowDifference = Math.abs(targetRow - sourceRow);
 		int colDifference = Math.abs(targetCol - sourceCol);
 
 		if(rowDifference == colDifference){
+			//checks a condition and assign a positive/negative value to the stepping variable.
 			int stepRow = (targetRow > sourceRow) ? 1 : -1;
       int stepCol = (targetCol > sourceCol) ? 1 : -1;
 
-			//start from 1 to the rowDifference & colDifference to iterate through the tiles in path.
-			for (int steps = 1; steps <= rowDifference; steps++){
-				int checkRow = sourceRow + steps * stepRow;
-				int checkCol = sourceCol + steps * stepCol;
-				if (!isTargetLocationFree(checkRow, checkCol) && !isTargetLocationCapturable(checkRow, checkCol)) {
+			for (int step = 1; step < rowDifference; step++){
+				//calculating which row and col to check
+				int checkRow = sourceRow + step * stepRow;
+				int checkCol = sourceCol + step * stepCol;
+				//System.out.println( checkRow + ", " + checkCol);
+				if (!isTargetLocationFree(checkRow, checkCol)) {
 					return false;
 				}
 			}
