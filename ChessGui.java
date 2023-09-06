@@ -204,11 +204,11 @@ public class ChessGui extends JPanel {
 
         if (isUserDraggingPiece()){
             MoveValidator moveVal = this.chessGame.getMoveValidator();
+            int sourceRow = this.dragPiece.getPiece().getRow();
+            int sourceColumn = this.dragPiece.getPiece().getColumn();
 
             for (int col = Piece.COLUMN_A; col <= Piece.COLUMN_H; col++){
                 for (int row = Piece.ROW_1; row <= Piece.ROW_8; row++){
-                    int sourceRow = this.dragPiece.getPiece().getRow();
-                    int sourceColumn = this.dragPiece.getPiece().getColumn();
  
                     // check if target location is valid
                     if (moveVal.isMoveValid(new Move(sourceRow, sourceColumn, row, col))){
