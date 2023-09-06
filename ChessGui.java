@@ -24,15 +24,12 @@ public class ChessGui extends JPanel {
     
     private ChessGame chessGame;
     private List<GuiPiece> guiPieces = new ArrayList<GuiPiece>();
+    private GuiPiece dragPiece;
+    private Move lastMove;
     /**
      * Constructs a new GameBoard instance.
      */
     public ChessGui() {
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setFocusable(true);
-        this.requestFocus();
-        this.setLayout(null);
-
         this.chessGame = new ChessGame();
         for (Piece piece : chessGame.getPieces()){
             createAndAddPieceGui(piece);
@@ -50,10 +47,14 @@ public class ChessGui extends JPanel {
         // label to display game state
         String labelText = this.getGameStateAsText();
         this.lblGameState = new JLabel(labelText);
-        lblGameState.setBounds(0, 30, 80, 30);
-        lblGameState.setBackground(Color.WHITE);
-        lblGameState.setForeground(Color.BLACK);
-        this.add(lblGameState);
+        this.lblGameState.setBounds(0, 30, 80, 30);
+        this.add(this.lblGameState);
+        System.out.println(this.lblGameState.isShowing());
+
+        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        this.setFocusable(true);
+        this.requestFocus();
+        this.setVisible(true);
     }
 
     public static int convertColumnToX(int column){
@@ -70,6 +71,18 @@ public class ChessGui extends JPanel {
 
     public static int convertYToRow(int y){
         return Piece.ROW_8 - (y - START_Y) / SQUARE_SIZE;
+    }
+
+    private boolean isUserDraggingPiece() {
+        return this.dragPiece != null;
+    }
+
+    public GuiPiece getDragPiece(){
+        return dragPiece;
+    }
+
+    public GuiPiece setDragPiece(GuiPiece piece){
+        return this.dragPiece = piece;
     }
     /**
      * create a game piece
@@ -96,8 +109,10 @@ public class ChessGui extends JPanel {
         } else {
             // Change model and update GUI piece afterwards
             System.out.println("Moving piece to " + targetRow + "/" + targetColumn);
-            //this.chessGame.movePiece(dragPiece.getPiece().getRow(), dragPiece.getPiece().getColumn(),
-                    //targetRow, targetColumn);
+            Move currentMove = new Move(dragPiece.getPiece().getRow(), dragPiece.getPiece().getColumn(), 
+                    targetRow, targetColumn);
+            // this.chessGame.movePiece(currentMove);
+            this.lastMove = currentMove;
             // Assuming that resetToUnderlyingPiecePosition() sets the new position for the dragPiece
             dragPiece.setToUnderlyingPiecePositions();
         }
@@ -171,10 +186,6 @@ public class ChessGui extends JPanel {
         // render the chess board
         for (int i = 0; i < BOARD_WIDTH / SQUARE_SIZE; i++) {
             // Creating a grid for the chess board
-            // g.drawLine(i * SQUARE_SIZE + START_X, 50, i * SQUARE_SIZE + START_Y, 512);
-            // g.drawLine(50, i * SQUARE_SIZE + START_X, BOARD_HEIGHT, i * SQUARE_SIZE + START_Y);
-            // System.out.println("I value is " + i);
-
             for (int j = 0; j < BOARD_HEIGHT / SQUARE_SIZE; j++) {
                 // System.out.println("J value is: " + j);
                 g.setColor(burntUmber);
@@ -189,6 +200,17 @@ public class ChessGui extends JPanel {
 
         for (GuiPiece piece : guiPieces) {
             g.drawImage(piece.getImage(), piece.getX(), piece.getY(), piece.getWidth(), piece.getHeight(), null);
+        }
+
+        if(!isUserDraggingPiece() &&  this.lastMove != null){
+            int highlightSourceX = convertColumnToX(this.lastMove.sourceCol);
+            int highlightSourceY = convertRowToY(this.lastMove.sourceRow);
+            int highlightTargetX = convertColumnToX(this.lastMove.targetCol);
+            int highlightTargetY = convertRowToY(this.lastMove.targetRow);
+
+            g.setColor(Color.YELLOW);
+            g.fillRoundRect(highlightSourceX+4, highlightSourceY+4, SQUARE_SIZE-8, SQUARE_SIZE-8,10,10);
+            g.fillRoundRect(highlightTargetX+4, highlightTargetY+4, SQUARE_SIZE-8, SQUARE_SIZE-8,10,10);
         }
     }
 

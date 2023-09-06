@@ -7,7 +7,6 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
     private List<GuiPiece> pieces;
     private ChessGui chessGUI;
 
-    private GuiPiece dragPiece;
     private int dragOffsetX, dragOffsetY;
 
     public PiecesDragAndDropListener(List<GuiPiece> pieces, ChessGui chessGUI) {
@@ -17,9 +16,9 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (this.dragPiece != null) {
-            this.dragPiece.setX(e.getPoint().x - this.dragOffsetX);
-            this.dragPiece.setY((e.getPoint().y - this.dragOffsetY));
+        if (this.chessGUI.getDragPiece() != null) {
+            this.chessGUI.getDragPiece().setX(e.getPoint().x - this.dragOffsetX);
+            this.chessGUI.getDragPiece().setY((e.getPoint().y - this.dragOffsetY));
             this.chessGUI.repaint();
         }
     }
@@ -44,20 +43,20 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
                 this.dragOffsetX = coordX - piece.getX();
                 this.dragOffsetY = coordY - piece.getY();
                 //System.out.println("DragOffsetX: " + this.dragOffsetX + " and " + "DragOffsetY: " + this.dragOffsetY);
-                this.dragPiece = piece;
+                this.chessGUI.setDragPiece(piece);
                 break;
             }
         }
 
-        if (dragPiece != null) {
-            this.pieces.remove(this.dragPiece);
-            this.pieces.add(this.dragPiece);
+        if (this.chessGUI.getDragPiece() != null) {
+            this.pieces.remove(this.chessGUI.getDragPiece());
+            this.pieces.add(this.chessGUI.getDragPiece());
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.dragPiece = null;
+        this.chessGUI.setDragPiece(null);
     }
 
     public boolean mouseOverPiece(GuiPiece piece, int x, int y) {
