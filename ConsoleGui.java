@@ -52,7 +52,7 @@ public class ConsoleGui {
 			srcRow = convertRowStrToRowInt(srcRowString);
 			tarCol = convertColumnStrToColumnInt(targetColString);
 			tarRow = convertRowStrToRowInt(targetRowString);
-			chessGame.movePiece(srcRow, srcCol, tarRow, tarCol);
+			chessGame.movePiece(new Move(srcRow, srcCol, tarRow, tarCol));
 		}
 	}
 
@@ -181,6 +181,5 @@ public class ConsoleGui {
 				break;
 		}
 		return strColour + strType;
-	}
-	
+	}	
 }

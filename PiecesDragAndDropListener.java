@@ -33,9 +33,11 @@ public class PiecesDragAndDropListener implements MouseListener, MouseMotionList
 
     @Override
     public void mousePressed(MouseEvent e) {
+        //getting x and y for the mouse position
         int coordX = e.getPoint().x;
         int coordY = e.getPoint().y;
 
+        //iterating through the pieces on the chess board.
         for (int i = this.pieces.size() - 1; i >= 0; i--) {
             GuiPiece piece = this.pieces.get(i);
 

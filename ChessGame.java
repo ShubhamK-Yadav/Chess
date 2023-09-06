@@ -74,21 +74,21 @@ public class ChessGame {
         piece.setColumn(column);
     }
 
-    public void movePiece(int sourceRow, int sourceCol, int targetRow, int targetCol){
-        if (!this.moveValidator.isMoveValid(sourceRow, sourceCol, targetRow, targetCol)){
+    public void movePiece(Move move){
+        if (!this.moveValidator.isMoveValid(move)){
             System.out.println("Invalid move! Please enter a valid move.");
             return;
         }
 
-        Piece piece = this.getNonCapturedPieceOnPosition(sourceRow, sourceCol);
+        Piece piece = this.getNonCapturedPieceOnPosition(move.sourceRow, move.sourceCol);
 
         int opponentColour = (piece.getColour()==Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
-        if (this.isPieceNonCapturedOnPosition(opponentColour, targetRow, targetCol)){
-            Piece oppPiece = getNonCapturedPieceOnPosition(targetRow, targetCol);
+        if (this.isPieceNonCapturedOnPosition(opponentColour, move.targetRow, move.targetCol)){
+            Piece oppPiece = getNonCapturedPieceOnPosition(move.targetRow, move.targetCol);
             oppPiece.setCaptured(true);
         }
-        piece.setRow(targetRow);
-        piece.setColumn(targetCol);
+        piece.setRow(move.targetRow);
+        piece.setColumn(move.targetCol);
         this.changeGameState();
     }
 
@@ -135,5 +135,9 @@ public class ChessGame {
 
     public List<Piece> getPieces(){
         return pieces;
+    }
+
+    public MoveValidator getMoveValidator(){
+        return moveValidator;
     }
 }

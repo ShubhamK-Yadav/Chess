@@ -30,6 +30,11 @@ public class ChessGui extends JPanel {
      * Constructs a new GameBoard instance.
      */
     public ChessGui() {
+        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        this.setFocusable(true);
+        this.requestFocus();
+        this.setVisible(true);
+
         this.chessGame = new ChessGame();
         for (Piece piece : chessGame.getPieces()){
             createAndAddPieceGui(piece);
@@ -50,11 +55,6 @@ public class ChessGui extends JPanel {
         this.lblGameState.setBounds(0, 30, 80, 30);
         this.add(this.lblGameState);
         System.out.println(this.lblGameState.isShowing());
-
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setFocusable(true);
-        this.requestFocus();
-        this.setVisible(true);
     }
 
     public static int convertColumnToX(int column){
@@ -200,6 +200,30 @@ public class ChessGui extends JPanel {
 
         for (GuiPiece piece : guiPieces) {
             g.drawImage(piece.getImage(), piece.getX(), piece.getY(), piece.getWidth(), piece.getHeight(), null);
+        }
+
+        if (isUserDraggingPiece()){
+            MoveValidator moveVal = this.chessGame.getMoveValidator();
+
+            for (int col = Piece.COLUMN_A; col <= Piece.COLUMN_H; col++){
+                for (int row = Piece.ROW_1; row <= Piece.ROW_8; row++){
+                    int sourceRow = this.dragPiece.getPiece().getRow();
+                    int sourceColumn = this.dragPiece.getPiece().getColumn();
+ 
+                    // check if target location is valid
+                    if (moveVal.isMoveValid(new Move(sourceRow, sourceColumn, row, col))){
+                        int highlightX = convertColumnToX(col);
+                        int highlightY = convertRowToY(row);
+ 
+                        // draw a black drop shadow by drawing a black rectangle with an offset of 1 pixel
+                        g.setColor(Color.BLACK);
+                        g.drawRoundRect( highlightX + 5, highlightY + 5, SQUARE_SIZE - 8, SQUARE_SIZE - 8,10,10);
+                        // draw the highlight
+                        g.setColor(Color.GREEN);
+                        g.drawRoundRect( highlightX + 4, highlightY + 4, SQUARE_SIZE - 8, SQUARE_SIZE - 8,10,10);
+                    }
+                }
+            }
         }
 
         if(!isUserDraggingPiece() &&  this.lastMove != null){
