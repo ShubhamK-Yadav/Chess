@@ -6,6 +6,10 @@ public class MoveValidator {
 	}
 
 	public boolean isMoveValid(Move move){
+		// System.out.println("Move source: " + move.sourceRow + ", " + move.sourceCol);
+		// System.out.println("Move target: " + move.targetRow + ", " + move.targetRow);
+		// System.out.println(chessGame.getNonCapturedPieceOnPosition(move.sourceRow, move.sourceCol));
+		// System.out.println(chessGame.getNonCapturedPieceOnPosition(move.targetRow, move.targetCol));
 		Piece srcPiece = chessGame.getNonCapturedPieceOnPosition(move.sourceRow, move.sourceCol);
 		Piece tarPiece = chessGame.getNonCapturedPieceOnPosition(move.targetRow, move.targetCol);
 		int opponentColour = (chessGame.getGameState() == Piece.COLOR_BLACK ? Piece.COLOR_WHITE : Piece.COLOR_BLACK);
@@ -62,23 +66,23 @@ public class MoveValidator {
 	}
 
 	private boolean isMoveValidPawnWhite(Move move) {
-		int rowDifference = move.targetRow - move.sourceRow;
-		int colDifference = move.targetCol - move.sourceCol;
+		int rowDifference = Math.abs(move.targetRow - move.sourceRow);
+		int colDifference = Math.abs(move.targetCol - move.sourceCol);
 		
 		//capturing with a pawn
-		if (rowDifference == 1 && (colDifference == -1 || colDifference == 1)){
+		if (rowDifference == 1 && colDifference == 1){
 			//move down left or down right if there is a capturable piece there
 			return isTargetLocationCapturable(move.targetRow, move.targetCol);
 		}
 
 		if (move.sourceRow == Piece.ROW_2){
-			if (rowDifference == 1){
+			if (rowDifference == 1 && colDifference == 0){
 				return isTargetLocationFree(move.targetRow, move.targetCol);
-			} else if (rowDifference == 2){
+			} else if (rowDifference == 2 && colDifference == 0){
 				return isTargetLocationFree(move.targetRow, move.targetCol) && isTargetLocationFree(move.targetRow-1 , move.targetCol);
 			}
 		} else {
-			return rowDifference == 1 && isTargetLocationFree(move.targetRow, move.targetCol);
+			return rowDifference == 1 && colDifference == 0 && isTargetLocationFree(move.targetRow, move.targetCol);
 		}
 		return false;
 	}
@@ -86,10 +90,10 @@ public class MoveValidator {
 	private boolean isMoveValidPawnBlack(Move move) {
 		//calculates the difference between the rows and cols to validate movement.
 		int rowDifference = move.targetRow - move.sourceRow;
-		int colDifference = move.targetCol - move.sourceCol;
+		int colDifference = Math.abs(move.targetCol - move.sourceCol);
 
 		//capturing with a pawn
-		if (rowDifference == -1 && (colDifference == -1 || colDifference == 1)){
+		if (rowDifference == -1 &&  colDifference == 1){
 			//move down left or down right if there is a capturable piece there
 			return isTargetLocationCapturable(move.targetRow, move.targetCol);
 		}
@@ -97,13 +101,13 @@ public class MoveValidator {
 		//movement forward
 		if (move.sourceRow == Piece.ROW_7){
 			// if piece at start, it can move 1 step or 2 steps.
-			if (rowDifference == -1){
+			if (rowDifference == -1 && colDifference == 0){
 				return isTargetLocationFree(move.targetRow, move.targetCol);
-			} else if (rowDifference == -2){
+			} else if (rowDifference == -2 && colDifference == 0){
 				return isTargetLocationFree(move.targetRow, move.targetCol) && isTargetLocationFree(move.targetRow+1 , move.targetCol);
 			}
 		} else {
-			return rowDifference == -1 && isTargetLocationFree(move.targetRow, move.targetCol);
+			return rowDifference == -1 && colDifference == 0 &&  isTargetLocationFree(move.targetRow, move.targetCol);
 		}
 		return false;
 	}

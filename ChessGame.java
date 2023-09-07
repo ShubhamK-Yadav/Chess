@@ -62,10 +62,11 @@ public class ChessGame {
 
     // Two things to do: 
     //Check if there is a opponent piece on the tile, if there is, mark that piece as captured. (Find non-captured pieces)
-	//Change the pieces, row and column
+	//Change the pieces, row and column. 
+    //Only use to set the piece in the correct pos when creating them
     public void movePiece(Piece piece, int row, int column){
         // if current colour is white then opponent is the other colour
-        int opponentColour = (piece.getColour()==Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
+        int opponentColour = (piece.getColour() == Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
         if (isPieceNonCapturedOnPosition(opponentColour, row, column)){
             Piece opponentPiece = getNonCapturedPieceOnPosition(row, column);
             opponentPiece.setCaptured(true);
@@ -82,7 +83,7 @@ public class ChessGame {
 
         Piece piece = this.getNonCapturedPieceOnPosition(move.sourceRow, move.sourceCol);
 
-        int opponentColour = (piece.getColour()==Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
+        int opponentColour = (piece.getColour() == Piece.COLOR_BLACK ? Piece.COLOR_WHITE:Piece.COLOR_BLACK);
         if (this.isPieceNonCapturedOnPosition(opponentColour, move.targetRow, move.targetCol)){
             Piece oppPiece = getNonCapturedPieceOnPosition(move.targetRow, move.targetCol);
             oppPiece.setCaptured(true);

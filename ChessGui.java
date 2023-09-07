@@ -207,9 +207,10 @@ public class ChessGui extends JPanel {
             int sourceRow = this.dragPiece.getPiece().getRow();
             int sourceColumn = this.dragPiece.getPiece().getColumn();
 
+            //iterating through each row and col
             for (int col = Piece.COLUMN_A; col <= Piece.COLUMN_H; col++){
                 for (int row = Piece.ROW_1; row <= Piece.ROW_8; row++){
- 
+                    // System.out.println(moveVal.isMoveValid(new Move(sourceRow, sourceColumn, row, col)));
                     // check if target location is valid
                     if (moveVal.isMoveValid(new Move(sourceRow, sourceColumn, row, col))){
                         int highlightX = convertColumnToX(col);
